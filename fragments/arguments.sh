@@ -1,4 +1,4 @@
-# MARK: check minimal macOS requirement
+# NOTE: check minimal macOS requirement
 autoload is-at-least
 
 installedOSversion=$(sw_vers -productVersion)
@@ -6,6 +6,7 @@ if ! is-at-least 10.14 $installedOSversion; then
     printlog "Installomator requires at least macOS 10.14 Mojave." ERROR
     exit 98
 fi
+
 
 # MARK: argument parsing
 if [[ $# -eq 0 ]]; then
@@ -21,18 +22,8 @@ elif [[ $1 == "/" ]]; then
     shift 3
 fi
 
-while [[ -n $1 ]]; do
-    if [[ $1 =~ ".*\=.*" ]]; then
-        # if an argument contains an = character, send it to eval
-        printlog "setting variable from argument $1" WARN
-        eval $1
-    else
-        # assume it's a label
-        label=$1
-    fi
-    # shift to next argument
-    shift 1
-done
+# first argument is the label
+label=$1
 
 # lowercase the label
 label=${label:l}
@@ -74,7 +65,7 @@ fi
 # Generate a session key for this run, this is useful to idenify streams when we're centrally logging.
 SESSION=$RANDOM
 
-# Mark: START
+# MARK: START
 printlog "################## Start Installomator v. $VERSION, date $VERSIONDATE" REQ
 printlog "################## Version: $VERSION" INFO
 printlog "################## Date: $VERSIONDATE" INFO
@@ -93,10 +84,19 @@ fi
 # get current user
 currentUser=$(scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ { print $3 }')
 
-# MARK: check for root
+# NOTE: check for root
 if [[ "$(whoami)" != "root" && "$DEBUG" -eq 0 ]]; then
     # not running as root
     cleanupAndExit 6 "not running as root, exiting" ERROR
+fi
+
+# check Swift Dialog presence and version
+DIALOG_CMD="/usr/local/bin/dialog"
+
+if [[ ! -x $DIALOG_CMD ]]; then
+    # Swift Dialog is not installed, clear cmd file variable to ignore
+    printlog "SwiftDialog is not installed, clear cmd file var"
+    DIALOG_CMD_FILE=""
 fi
 
 # MARK: labels in case statement
@@ -107,22 +107,7 @@ longversion)
     exit 0
     ;;
 valuesfromarguments)
-    if [[ -z $name ]]; then
-        printlog "need to provide 'name'" ERROR
-        exit 1
-    fi
-    if [[ -z $type ]]; then
-        printlog "need to provide 'type'" ERROR
-        exit 1
-    fi
-    if [[ -z $downloadURL ]]; then
-        printlog "need to provide 'downloadURL'" ERROR
-        exit 1
-    fi
-    if [[ -z $expectedTeamID ]]; then
-        printlog "need to provide 'expectedTeamID'" ERROR
-        exit 1
-    fi
+    # no action necessary, all values should be provided in arguments
     ;;
 
 # label descriptions start here
