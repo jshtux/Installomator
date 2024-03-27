@@ -7,6 +7,6 @@ foxitreader)
     appNewVersion=$( echo $downloadURL | cut -d / -f 10 )
     archiveName=$( $downloadURL | cut -d / -f 11)
     expectedTeamID="8GN47HTP75"
-    blockingProcesses=( "Foxit PDF Reader" "FoxitPDFReaderUpdateService" )
+    blockingProcesses=( "Foxit PDF Reader" )
     #forcefulQuit=YES
     ;;
