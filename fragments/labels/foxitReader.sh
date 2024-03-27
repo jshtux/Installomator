@@ -5,6 +5,7 @@ FoxitReader)
     # strip trailing carriage return from download url
     downloadURL=${downloadURL%$'\r'}
     appNewVersion=$( echo $downloadURL | cut -d / -f 10 )
+    archiveName=$( $downloadURL | cut -d / -f 11)
     expectedTeamID="8GN47HTP75"
     blockingProcesses=( "Foxit PDF Reader" "FoxitPDFReaderUpdateService" )
     #forcefulQuit=YES
