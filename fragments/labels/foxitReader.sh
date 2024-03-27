@@ -1,5 +1,5 @@
 FoxitReader)
-    name="Foxit Reader"
+    name="Foxit PDF Reader"
     type="pkg"
     downloadURL=$(curl -fsIL "https://www.foxit.com/downloads/latest.html?product=Foxit-Reader&platform=Mac-OS-X&version=&package_type=&language=English&distID=" | grep location | cut -d \  -f 2)
     appNewVersion=$( echo $downloadURL | cut -d / -f 10 )
